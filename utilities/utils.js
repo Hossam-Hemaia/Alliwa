@@ -408,7 +408,7 @@ exports.createPdfDoc = async (data) => {
     const Doc = new PdfKit({
       size: "A4",
       layout: "portrait",
-      margins: { top: 10, bottom: 30, left: 1, right: 1 },
+      // margins: { top: 10, bottom: 30, left: 1, right: 1 },
       bufferPages: true,
     });
     Doc.pipe(fs.createWriteStream(reportPath));
@@ -537,16 +537,15 @@ exports.createPdfDoc = async (data) => {
     const pageHeight = Doc.page.height;
     const fixedHeaderHeight = 29 * 15;
     let currentPages = Doc.bufferedPageRange();
-    const detailsTableHeight = invoiceDetailsTable.length * 20 + 30;
+    const detailsTableHeight = invoiceDetailsTable.length * 18 + 25;
     let remainingHeight;
-    if (currentPages.count === 1) {
-      remainingHeight = pageHeight - (fixedHeaderHeight + detailsTableHeight);
-    }
-    if (remainingHeight < 120 && currentPages.count === 1) {
+    remainingHeight =
+      pageHeight - (fixedHeaderHeight + detailsTableHeight + 190);
+    if (remainingHeight <= 50) {
       Doc.addPage();
       remainingHeight = pageHeight;
     } else {
-      remainingHeight -= 90;
+      remainingHeight -= 40;
     }
     await Doc.table(invoiceSummary, {
       prepareHeader: () => Doc.font(arFont).fontSize(9),
@@ -594,11 +593,11 @@ exports.createPdfDoc = async (data) => {
         );
     }
     Doc.text("          ");
-    if (remainingHeight < 110 && currentPages.count === 1) {
+    if (remainingHeight <= 50) {
       Doc.addPage();
       remainingHeight = pageHeight;
     } else {
-      remainingHeight -= 85;
+      remainingHeight -= 60;
     }
     await Doc.table(invoiceDuo, {
       prepareHeader: () => Doc.font(arFont).fontSize(9),
@@ -613,11 +612,11 @@ exports.createPdfDoc = async (data) => {
       },
       x: 10,
     });
-    if (remainingHeight < 75 && currentPages.count === 1) {
+    if (remainingHeight <= 50) {
       Doc.addPage();
       remainingHeight = pageHeight;
     } else {
-      remainingHeight -= 45;
+      remainingHeight -= 80;
     }
     await Doc.table(itemSummary, {
       title: this.textDirection("ملخص الاصناف"),
@@ -632,11 +631,11 @@ exports.createPdfDoc = async (data) => {
       },
       x: 350,
     });
-    if (remainingHeight < 75 && currentPages.count === 1) {
+    if (remainingHeight <= 50) {
       Doc.addPage();
       remainingHeight = pageHeight;
     } else {
-      remainingHeight -= 45;
+      remainingHeight -= 60;
     }
     await Doc.table(taxSummary, {
       title: this.textDirection("ملخص الضرائب"),
@@ -651,11 +650,9 @@ exports.createPdfDoc = async (data) => {
       },
       x: 350,
     });
-    if (remainingHeight < 75 && currentPages.count === 1) {
+    if (remainingHeight <= 50) {
       Doc.addPage();
       remainingHeight = pageHeight;
-    } else {
-      remainingHeight -= 45;
     }
     Doc.font(arFont)
       .fontSize(12)
@@ -705,7 +702,6 @@ exports.createPdfDoc = async (data) => {
     Doc.end();
     return reportName;
   } catch (err) {
-    console.log(err);
     throw new Error(err);
   }
 };
@@ -1088,6 +1084,19 @@ exports.emailSender = async (email, ccMail, fileName, filePath, message) => {
       pass: process.env.EMAIL_PASS,
     },
   });
+  /********************************************
+   * this configuration works for windows servers
+   * let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    auth: {
+      user: "hoseamhemaea80@gmail.com",
+      pass: "syjxdxncrvkudfox",
+    },
+    port: 587,
+    secure: false,
+    debug: true,
+  }); 
+   ********************************************/
   let emailOptions = {
     from: process.env.EMAIL,
     to: email,
