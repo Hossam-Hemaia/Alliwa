@@ -17,7 +17,7 @@ exports.getInvoice = async (req, res, next) => {
     let fileUrl;
     const header = await utilities.getMainHeader(headerId);
     const invHeader = await utilities.getInvoiceHeader(invoiceId);
-    const barcodeImg = await utilities.createBarcode(invoiceId);
+    const barcodeImg = await utilities.createBarcode(invHeader.inv_no);
     const qrCodeImg = await utilities.createQrcode(invHeader.qr);
     const invBody = await utilities.getInvoiceDetails(invoiceId);
     const invoiceData = {};
@@ -34,7 +34,7 @@ exports.getInvoice = async (req, res, next) => {
       l_sellerNumbers: header?.l_phone,
       l_commRecord: header?.l_cs_no,
       l_taxNumber: header?.l_tax_no,
-      invoiceNumber: invoiceId,
+      invoiceNumber: invHeader?.inv_no,
       invoiceDate: invHeader?.inv_date,
       currency: invHeader?.cur_id,
       invoiceType: invHeader?.inv_type_id,

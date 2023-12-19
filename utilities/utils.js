@@ -36,7 +36,7 @@ exports.createQrcode = async (qrText) => {
 exports.getMainHeader = async (headerId) => {
   try {
     const response = await axios.get(
-      `https://alliwa.maxapex.net/apex/finc/header/header?com_id=${headerId}`
+      `https://alliwa.finc.app/apex/dev/finc/header/header?com_id=${headerId}`
     );
     return response.data.items[0];
   } catch (err) {
@@ -47,7 +47,7 @@ exports.getMainHeader = async (headerId) => {
 exports.getInvoiceHeader = async (invoiceId) => {
   try {
     const response = await axios.get(
-      `https://alliwa.maxapex.net/apex/finc/inv_head/inv_head?inv_id=${invoiceId}`
+      `https://alliwa.finc.app/apex/dev/finc/inv_head/inv_head?inv_id=${invoiceId}`
     );
     return response.data.items[0];
   } catch (err) {
@@ -58,7 +58,7 @@ exports.getInvoiceHeader = async (invoiceId) => {
 exports.getInvoiceDetails = async (invoiceId) => {
   try {
     const response = await axios.get(
-      `https://alliwa.maxapex.net/apex/finc/inv_table/inv_table?inv_id=${invoiceId}`
+      `https://alliwa.finc.app/apex/dev/finc/inv_table/inv_table?inv_id=${invoiceId}`
     );
     return response.data.items;
   } catch (err) {
